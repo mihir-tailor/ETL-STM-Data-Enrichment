@@ -18,7 +18,11 @@ object MainObj extends App{
   val CalendarLookup = new MapCalendarLookup(calendarList)
   val enrichedTripRoute : List[TripRoute] = tripList.map(trip => TripRoute(trip, routeLookup.lookup(trip.route_id)))
   val enrichedTrip : List[Enriched] = enrichedTripRoute.map(tripRoute => Enriched(tripRoute, CalendarLookup.lookup(tripRoute.trips.service_id)))
-  val writer = new DataWriter(enrichedTrip)
-  writer.writeData
+
+/* Filter for Subway which runs on Monday */
+  val TripsEnrichedOnMonday: List[Enriched] = enrichedTrip.filter(a => a.calendar.monday.equals("1") && a.tripRoute.routes.route_type.equals("1"))
+
+  val writer = new DataWriter(TripsEnrichedOnMonday)
+  writer.writeData()
 
 }
